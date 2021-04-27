@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // Track the Bluetooth connection with the remote device
   BluetoothConnection connection;
 
-  bool _isButtonUnavailable = false;
+  bool _isButtonUnavailable = true;
 
   // To track whether the device is still connected to Bluetooth
   bool get isConnected => connection != null && connection.isConnected;
@@ -201,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // Method to send message
 // for turning the Bluetooth device on
   void _sendOnMessageToBluetooth() async {
-    connection.output.add(utf8.encode("1" + "\r\n"));
+    connection.output.add(utf8.encode("1")); // + "\r\n"
     await connection.output.allSent;
     show('Device Turned On');
     setState(() {
@@ -212,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // Method to send message
 // for turning the Bluetooth device off
   void _sendOffMessageToBluetooth() async {
-    connection.output.add(utf8.encode("0" + "\r\n"));
+    connection.output.add(utf8.encode("0"));
     await connection.output.allSent;
     show('Device Turned Off');
     setState(() {
@@ -302,8 +302,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             onPressed: _isButtonUnavailable
                                 ? null
                                 : _connected
-                                    ? _disconnect
-                                    : _connect,
+                                ? _disconnect
+                                : _connect,
                             child: Text(_connected ? 'Disconnect' : 'Connect'),
                           ),
                         ),
@@ -323,7 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: RaisedButton(
                             // ON button
                             onPressed:
-                                _connected ? _sendOnMessageToBluetooth : null,
+                            _connected ? _sendOnMessageToBluetooth : null,
                             child: Text("ON"),
                           ),
                         ),
@@ -335,7 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: RaisedButton(
                             // OFF button
                             onPressed:
-                                _connected ? _sendOffMessageToBluetooth : null,
+                            _connected ? _sendOffMessageToBluetooth : null,
                             child: Text("OFF"),
                           ),
                         ),
