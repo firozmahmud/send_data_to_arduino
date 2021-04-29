@@ -243,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         flex: 5,
                         child: Text(
                           'Enable Bluetooth',
-                          style: TextStyle(fontSize: 24),
+                          style: TextStyle(fontSize: 18),
                         ),
                       ),
                       Expanded(
