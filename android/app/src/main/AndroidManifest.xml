@@ -2,10 +2,11 @@
     package="com.example.send_data_to_arduino">
    <application
         android:label="send_data_to_arduino"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@drawable/apk">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
+            android:label="Reduan's Smart Home"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"

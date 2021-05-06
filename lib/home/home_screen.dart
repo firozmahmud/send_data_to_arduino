@@ -226,124 +226,138 @@ class _HomeScreenState extends State<HomeScreen> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Home Control'),
+          backgroundColor: Colors.teal,
+          title: Text("Reduan's Smart Home"),
           centerTitle: true,
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
+        body: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+            image: AssetImage("images/background.jpg"),
+            fit: BoxFit.fill,
+          )),
           child: Padding(
-            padding: const EdgeInsets.only(top: 36),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 5,
-                        child: Text(
-                          'Enable Bluetooth',
-                          style: TextStyle(fontSize: 18),
+            padding: const EdgeInsets.all(8.0),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 36),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Text(
+                            'Enable Bluetooth',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.red,
+                            ),
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Switch(
-                          value: _bluetoothState.isEnabled,
-                          onChanged: (bool value) {
-                            future() async {
-                              if (value) {
-                                // Enable Bluetooth
-                                await FlutterBluetoothSerial.instance
-                                    .requestEnable();
-                              } else {
-                                // Disable Bluetooth
-                                await FlutterBluetoothSerial.instance
-                                    .requestDisable();
+                        Expanded(
+                          flex: 1,
+                          child: Switch(
+                            value: _bluetoothState.isEnabled,
+                            onChanged: (bool value) {
+                              future() async {
+                                if (value) {
+                                  // Enable Bluetooth
+                                  await FlutterBluetoothSerial.instance
+                                      .requestEnable();
+                                } else {
+                                  // Disable Bluetooth
+                                  await FlutterBluetoothSerial.instance
+                                      .requestDisable();
+                                }
+
+                                // In order to update the devices list
+                                await getPairedDevices();
+                                _isButtonUnavailable = false;
+
+                                // Disconnect from any device before
+                                // turning off Bluetooth
+                                if (_connected) {
+                                  _disconnect();
+                                }
                               }
 
-                              // In order to update the devices list
-                              await getPairedDevices();
-                              _isButtonUnavailable = false;
-
-                              // Disconnect from any device before
-                              // turning off Bluetooth
-                              if (_connected) {
-                                _disconnect();
-                              }
-                            }
-
-                            future().then((_) {
-                              setState(() {});
-                            });
-                          },
-                        ),
-                      )
-                    ],
+                              future().then((_) {
+                                setState(() {});
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: DropdownButton(
-                          items: _getDeviceItems(),
-                          onChanged: (value) => setState(() => _device = value),
-                          value: _devicesList.isNotEmpty ? _device : null,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: RaisedButton(
-                            onPressed: _isButtonUnavailable
-                                ? null
-                                : _connected
-                                ? _disconnect
-                                : _connect,
-                            child: Text(_connected ? 'Disconnect' : 'Connect'),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: DropdownButton(
+                            items: _getDeviceItems(),
+                            onChanged: (value) =>
+                                setState(() => _device = value),
+                            value: _devicesList.isNotEmpty ? _device : null,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 8.0, right: 8.0, top: 36, bottom: 8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: RaisedButton(
-                            // ON button
-                            onPressed:
-                            _connected ? _sendOnMessageToBluetooth : null,
-                            child: Text("ON"),
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: RaisedButton(
+                              onPressed: _isButtonUnavailable
+                                  ? null
+                                  : _connected
+                                      ? _disconnect
+                                      : _connect,
+                              child:
+                                  Text(_connected ? 'Disconnect' : 'Connect'),
+                            ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: RaisedButton(
-                            // OFF button
-                            onPressed:
-                            _connected ? _sendOffMessageToBluetooth : null,
-                            child: Text("OFF"),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 36, bottom: 8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: RaisedButton(
+                              // ON button
+                              onPressed:
+                                  _connected ? _sendOnMessageToBluetooth : null,
+                              child: Text("ON"),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: RaisedButton(
+                              // OFF button
+                              onPressed: _connected
+                                  ? _sendOffMessageToBluetooth
+                                  : null,
+                              child: Text("OFF"),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
